@@ -1,2 +1,2 @@
 # CompanyMetricsToolkit
-Multipurpose toolkit for measuring companies' (partnerships, sole proprietorships and corporations) financial, operational and overall business performance.
+Multipurpose toolkit for measuring companies' (partnerships, sole proprietorships) financial, operational and overall business performance.
