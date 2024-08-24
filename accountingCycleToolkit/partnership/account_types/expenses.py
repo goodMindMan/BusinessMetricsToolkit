@@ -1,6 +1,6 @@
 import pandas as pd
 
-from partnership.root import Account
+from ..root_account import Account
 
 class Expense(Account):
     def __init__(self, pr:int, name:str):
@@ -57,3 +57,11 @@ class BadDebt(Expense):
 class LossDisposal(Expense):
     def account_type(self):
         return 'loss_disposal'
+
+# Add new sub types here
+expense_accounts = [
+        'ttl_cogs', 'ttl_salaries', 'ttl_rent', 
+        'ttl_utilities', 'ttl_interest', 'ttl_insurance', 'ttl_depreciation', 
+        'ttl_depletion', 'ttl_bad_debt', 'ttl_loss_disposal', 
+        'ttl_othr_exp', 'ttl_exp' 
+]
