@@ -1,6 +1,6 @@
 import pandas as pd
 
-from partnership.root_account import Account
+from ..root_account import Account
 
 class Asset(Account):
     def __init__(self, pr:int, name:str):
@@ -111,3 +111,7 @@ class AllowanceDoubtful(ContraAsset):
     def account_sub_type(self):
         return 'allowance_doubtful'
 
+# Add new sub types here
+asset_accounts = ['cash', 'account_receivables', 'inventory', 'prepaid', 'notes_receivable',
+        'investments', 'equipments', 'land', 'intangable_assets', 
+        'acc_depreciation', 'acc_depletion', 'allowance_doubtful']
