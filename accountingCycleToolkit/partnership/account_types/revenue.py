@@ -1,6 +1,6 @@
 import pandas as pd
 
-from partnership.root import Account
+from ..root_account import Account
 
 class Revenue(Account):
     def __init__(self, pr:int, name:str):
@@ -52,4 +52,7 @@ class ReturnsAllowances(ContraRev):
     def account_type(self):
         return 'returns_allowances'
 
-
+revenue_accounts = [
+        'sales', 
+        'othr_contra_revenue', 'gain_disposal', 'discount', 'returns_allowances', 
+        ]
