@@ -1,24 +1,25 @@
 import pandas as pd
 import random
 
-import partnership.root as root
+from partnership.root_account import Account
 
 class Journaling:
     general_journal = pd.DataFrame(columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+    used_accounts_names = []
     used_accounts = []
-    def two_line_entry(self, date:str, dr_acc:root.Account, cr_acc:root.Account, amount:float):
+    
+    def two_line_entry(self, date:str, dr_acc:Account, cr_acc:Account, amount:float):
         
         accounts =[dr_acc, cr_acc]
         for acc in accounts:
             try:
                 acc.account_type()
+                if acc not in self.used_accounts:
+                    self.used_accounts.append(acc)
+                    self.used_accounts_names.append(acc.name)
             except TypeError:
                 print(f'{acc} may not be a properly defined account or isn\'t an account at all,\nmake sure to enter an instance of `Root.Account`')
         
-        accounts_names = [dr_acc.name, cr_acc.name]
-        for name in accounts_names:
-            if name not in self.used_accounts:
-                self.used_accounts.append(name)
         
         dr_acc.transaction(date, amount)
         cr_acc.transaction(date, 0 ,amount)
@@ -37,21 +38,20 @@ class Journaling:
     
     def three_line_entry(
             self, date:str, 
-            acc01:root.Account, acc01_blnc, acc01_amount:float,
-            acc02:root.Account, acc02_blnc, acc02_amount:float,
-            acc03:root.Account
+            acc01:Account, acc01_blnc, acc01_amount:float,
+            acc02:Account, acc02_blnc, acc02_amount:float,
+            acc03:Account
             ):
         
-        accounts =[acc01, acc02, acc03]
+        accounts = [acc01, acc02, acc03]
         for acc in accounts:
             try:
                 acc.account_type()
+                if acc not in self.used_accounts:
+                    self.used_accounts.append(acc)
+                    self.used_accounts_names.append(acc.name)
             except TypeError:
                 print(f'{acc} may not be a properly defined account or isn\'t an account at all,\nmake sure to enter an instance of `Root.Account`')
-        accounts_names = [acc01.name, acc02.name, acc03.name]
-        for name in accounts_names:
-            if name not in self.used_accounts:
-                self.used_accounts.append(name)
 
         if acc01_blnc == acc02_blnc:
 
@@ -98,3 +98,6 @@ class Journaling:
             entry = pd.concat([dr_entry01, cr_entry01, cr_entry02], ignore_index=True)
 
             self.general_journal = pd.concat([self.general_journal, entry], ignore_index=True)
+    
+    def all_accounts(self):
+        return self.used_accounts
