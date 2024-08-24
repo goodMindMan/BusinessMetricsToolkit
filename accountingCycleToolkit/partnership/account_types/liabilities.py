@@ -1,6 +1,6 @@
 import pandas as pd
 
-from partnership.root import Account
+from ..root_account import Account
 
 class Liability(Account):
     def __init__(self, pr:int, name:str):
@@ -29,18 +29,34 @@ class NotesPayable(Liability):
 
 class SalariesPayable(Liability):
     def account_type(self):
-        return 'salaries_payable'
-    
+        return 'salaries_pay'
+
+class InterestPayable(Liability):
+    def account_type(self):
+        return 'interest_pay'    
+
 class UnearnedRevenue(Liability):
     def account_type(self):
         return 'unearned_revenue'
+
+class cpltd(Liability):
+    def account_type(self):
+        return 'cpltd'
+
+class LongtermNotesPayable(Liability):
+    def account_type(self):
+        return 'longterm_notes_pay'
+
+class Loan(Liability):
+    def account_type(self):
+        return 'loan'
 
 class ContraLiability(Account):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
     
     def account_type(self):
-        return 'debt'
+        return 'contra_liability'
        
     def balance(self):                  
         dr_sum = self.ledger['Debit'].sum()
@@ -51,3 +67,9 @@ class ContraLiability(Account):
     def show_ledger(self):
         balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns)
         return pd.concat([self.ledger, balance_row], ignore_index=True)
+
+
+liability_accounts = [
+    'account_pay','notes_pay','salaries_pay','interest_pay','unearned_revenue','cpltd',
+    'longterm_notes_pay','loan', 'contra_liability'
+]
