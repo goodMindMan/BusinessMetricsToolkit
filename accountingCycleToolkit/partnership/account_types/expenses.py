@@ -5,58 +5,66 @@ from ..root_account import Account
 class Expense(Account):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
+        self.balance = ['Debit'].sum() - ['Credit'].sum()
+        self.account_type = 'expense'
     
-    def account_type(self):
-        return 'expense'
-       
-    def balance(self):
-        dr_sum = self.ledger['Debit'].sum()
-        cr_sum = self.ledger['Credit'].sum()
-        balance = dr_sum - cr_sum
-        return balance
-    
-    def show_ledger(self):
-        balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns)
-        return pd.concat([self.ledger, balance_row], ignore_index=True)
+    def show_ledger(self): #O(mn)
+        '''
+        Debit is the normal balance of Expense accounts, that is y the right feild is empty i.e. `'-'`
+        Space and Time complexity of O(mn) in this case 3*3
+        '''
+        balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns) #O(mn)
+        return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
 
 class Cogs(Expense):
-    def account_type(self):
-        return 'cogs'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'cogs'
+
 class Salaries(Expense):
-    def account_type(self):
-        return 'salaries'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'salaries'
 
 class Rent(Expense):
-    def account_type(self):
-        return 'rent'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'rent'
 
 class Utilities(Expense):
-    def account_type(self):
-        return 'utilities'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'utilities'
 
 class Interest(Expense):
-    def account_type(self):
-        return 'interest'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'interest'
 
 class Insurance(Expense):
-    def account_type(self):
-        return 'insurance'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'insurance'
 
 class Depreciation(Expense):
-    def account_type(self):
-        return 'depreciation'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'depreciation'
 
 class Depletion(Expense):
-    def account_type(self):
-        return 'depletion'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'depletion'
 
 class BadDebt(Expense):
-    def account_type(self):
-        return 'bad_debt' 
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'bad_debt' 
 
 class LossDisposal(Expense):
-    def account_type(self):
-        return 'loss_disposal'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'loss_disposal'
 
 # Add new sub types here
 expense_accounts = [
