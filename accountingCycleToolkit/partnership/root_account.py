@@ -2,7 +2,7 @@ import pandas as pd
 
 # the accounting system should start by defining an abstract Account
 # this abstract account:
-    #1. has a name an id (pr) 
+    #1. has a name and id (pr) 
     #2. has its own ledger that logs transactions that an account is involved in
     #3. is able to log a transaction into the ledger created
 class Account:
@@ -22,7 +22,7 @@ class Account:
     #1. An attribute with the `account_type` e.g. asset, revenue, expense, etc...
     #2. An attribute containing a calculation of the balance of the account
     #3. A `show_ledger` method that prints out the ledger for each account after
-    # Itconcatenates a balance row that calculates the net amount in the account
+    # It concatenates a balance row that calculates the net amount in the account
         #- The balance row changes based on the account type, it is either debit or credit
 
 # After that we creating suclasses to the mother class of each file in `account_types`
