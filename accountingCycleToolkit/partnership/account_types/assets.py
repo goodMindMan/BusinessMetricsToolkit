@@ -1,115 +1,99 @@
 import pandas as pd
 
-from ..root_account import Account
+from ..root_account import Account #Summons the abstract account
 
+# Programatically there is no difference in functionality and-
+# structure between a current and a non-current asset-
+# so we only need to create two main classes:
+    # `Assets`: debit Normal balance (handles basic current and non current accounts)
+    # `ContraAssets`: credit Normal balance (handles accumulated non-cash accounts)
 class Asset(Account):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
+        self.balance = self.ledger['Debit'].sum() - self.ledger['Credit'].sum()
+        self.account_type = 'asset'
     
-    def account_type(self):
-        return 'asset'
-    
-    def balance(self):
-        dr_sum = self.ledger['Debit'].sum()
-        cr_sum = self.ledger['Credit'].sum()
-        balance = dr_sum - cr_sum
-        return balance
-    
-    def show_ledger(self):
-        balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns)
-        return pd.concat([self.ledger, balance_row], ignore_index=True)
+    def show_ledger(self): #O(mn)
+        '''
+        Debit is the normal balance of Assets accounts, that is y the right feild is empty i.e. `'-'`
+        Space and Time complexity of O(mn) in this case 3*3
+        '''
+        balance_row = pd.DataFrame([['Balance:', self.balance, '-']], columns=self.columns) #O(mn)
+        return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
 
 class Cash(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'cash'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'cash'
 
 class AccountReceivables(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'account_receivables'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'account_receivables'
 
 class Inventory(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'inventory'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'inventory'
 
 class PrepaidExpense(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'prepaid'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'prepaid'
 
 class NotesReceivable(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'notes_receivable'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'notes_receivable'
 
 class Investments(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'investments'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'investments'
 
 class Equipment(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'equipments'  
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'equipments'  
 
 class Land(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'land'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'land'
     
 class IntangableAssets(Asset):
-    def __init__(self, pr:int, name:str):
-        super().__init__(pr, name)
-    
-    def account_sub_type(self):
-        return 'intangable_assets'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'intangable_assets'
 
 class ContraAsset(Account):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
-    
-    def account_type(self):
-        return 'contra_asset'
-     
-    def balance(self):
-        dr_sum = self.ledger['Debit'].sum()
-        cr_sum = self.ledger['Credit'].sum()
-        balance = cr_sum - dr_sum 
-        return balance
-    
+        self.balance = self.ledger['Credit'].sum() - self.ledger['Debit'].sum()
+        self.account_type = 'contra_asset'
+
     def show_ledger(self):
-        balance_row = pd.DataFrame([['Balance:', '-', self.balance()]], columns=self.columns)
-        return pd.concat([self.ledger, balance_row], ignore_index=True)
+        '''
+        Credit is the normal balance of `ContraAsset` accounts, that is y the left field is empty i.e. `'-'`
+        Space and Time complexity of O(mn) in this case 3*3
+        '''
+        balance_row = pd.DataFrame([['Balance:', '-', self.balance()]], columns=self.columns) #O(mn)
+        return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
 
-class AccDepreciation(ContraAsset):
-    def account_sub_type(self):
-        return 'acc_depreciation'
+class AccDepreciation(ContraAsset): 
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance, account_type)
+        self.account_sub_type = 'acc_depreciation'
 
-class AccDepletion(ContraAsset):
-    def account_sub_type(self):
-        return 'acc_depletion'
+class AccDepletion(ContraAsset):   
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance, account_type)
+        self.account_sub_type = 'acc_depletion'
 
-class AllowanceDoubtful(ContraAsset):
-    def account_sub_type(self):
-        return 'allowance_doubtful'
+class AllowanceDoubtful(ContraAsset):   
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance, account_type)   
+        self.account_sub_type = 'allowance_doubtful'
 
 # Add new sub types here
 asset_accounts = ['cash', 'account_receivables', 'inventory', 'prepaid', 'notes_receivable',
