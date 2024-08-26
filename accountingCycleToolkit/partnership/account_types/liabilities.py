@@ -2,69 +2,75 @@ import pandas as pd
 
 from ..root_account import Account
 
+# We need to create two main classes:
+    # `Liability`: Credit Normal balance (handles basic current and non current accounts)
+    # `ContraLiability`: Debit Normal balance (handles really rare cases)
 class Liability(Account):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
-    
-    def account_type(self):
-        return 'debt'
-       
-    def balance(self):
-        dr_sum = self.ledger['Debit'].sum()
-        cr_sum = self.ledger['Credit'].sum()
-        balance = cr_sum - dr_sum 
-        return balance
-    
+        self.balance = self.ledger['Credit'].sum() - self.ledger['Debit'].sum()
+        self.account_type = 'debt'
+
     def show_ledger(self):
-        balance_row = pd.DataFrame([['Balance:', '-', self.balance()]], columns=self.columns)
-        return pd.concat([self.ledger, balance_row], ignore_index=True)
+        '''
+        Credit is the normal balance of `Liability` accounts, that is y the left field is empty i.e. `'-'`
+        Space and Time complexity of O(mn) in this case 3*3
+        '''
+        balance_row = pd.DataFrame([['Balance:', '-', self.balance()]], columns=self.columns) #O(mn)
+        return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
 
 class AccountPayable(Liability):
-    def account_type(self):
-        return 'account_pay'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_type = 'account_pay'
 
 class NotesPayable(Liability):
-    def account_type(self):
-        return 'notes_pay'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_type = 'notes_pay'
 
 class SalariesPayable(Liability):
-    def account_type(self):
-        return 'salaries_pay'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_type = 'salaries_pay'
 
 class InterestPayable(Liability):
-    def account_type(self):
-        return 'interest_pay'    
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_type = 'interest_pay'    
 
 class UnearnedRevenue(Liability):
-    def account_type(self):
-        return 'unearned_revenue'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_type = 'unearned_revenue'
 
 class cpltd(Liability):
-    def account_type(self):
-        return 'cpltd'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_type = 'cpltd'
 
 class LongtermNotesPayable(Liability):
-    def account_type(self):
-        return 'longterm_notes_pay'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_type = 'longterm_notes_pay'
 
 class Loan(Liability):
-    def account_type(self):
-        return 'loan'
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_type = 'loan'
 
 class ContraLiability(Account):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
-    
-    def account_type(self):
-        return 'contra_liability'
+        self.balance = ['Debit'].sum() - ['Credit'].sum()
+        self.account_type = 'contra_liability'
        
-    def balance(self):                  
-        dr_sum = self.ledger['Debit'].sum()
-        cr_sum = self.ledger['Credit'].sum()
-        balance = dr_sum - cr_sum 
-        return balance
-    
+        
     def show_ledger(self):
+        '''
+        Credit is the normal balance of `ContraLiability` accounts, that is y the left field is empty i.e. `'-'`
+        Space and Time complexity of O(mn) in this case 3*3
+        '''
         balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns)
         return pd.concat([self.ledger, balance_row], ignore_index=True)
 
