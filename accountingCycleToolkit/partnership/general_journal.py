@@ -139,56 +139,64 @@ class Journaling:
 
         self.general_journal = pd.concat([self.general_journal, entry], ignore_index=True)
 
-    def journalize_tri01(self, date:str, 
-                         dracc:Account, dracc_amount:float, 
-                         acc02:Account, acc02_amount:float, 
-                         cracc:Account):
-            '''
-            Summons needed functions to chec validity and log transactions
-            Then writes the entry
-            O (mn)
-            '''
-            cracc_amount = dracc_amount + acc02_amount # for the entry to be balance this shoould be true
-            entry_type = 'two_dr' # variable that determaines which type of tri entry to use
-            self.object_handling_tri(dracc, acc02, cracc)
-            self.log_entry_tri(date, entry_type, dracc, acc02, cracc, dracc_amount, acc02_amount)
 
-            rand_id = round(100000*(random.random()))
+    def journalize_tri(self, date:str, tri_type:str, 
+                            dracc:Account, dracc_amount:float, 
+                            acc02:Account, acc02_amount:float, 
+                            cracc:Account):
+        
+        def two_dr(date, dracc, dracc_amount, acc02, acc02_amount, cracc):
+                '''
+                Summons needed functions to chec validity and log transactions
+                Then writes the entry
+                O (mn)
+                '''
+                cracc_amount = dracc_amount + acc02_amount # for the entry to be balance this shoould be true
+                entry_type = 'two_dr' # variable that determaines which type of tri entry to use
+                self.object_handling_tri(dracc, acc02, cracc)
+                self.log_entry_tri(date, entry_type, dracc, acc02, cracc, dracc_amount, acc02_amount)
 
-            dr_entry01 = pd.DataFrame([[rand_id, date, dracc.name, dracc.pr, dracc_amount, 0]]
-                        , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+                rand_id = round(100000*(random.random()))
+
+                dr_entry01 = pd.DataFrame([[rand_id, date, dracc.name, dracc.pr, dracc_amount, 0]]
+                            , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+                
+                dr_entry02 = pd.DataFrame([[rand_id, date, acc02.name, acc02.pr, acc02_amount, 0]]
+                            , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+
+                cr_entry03 = pd.DataFrame([[rand_id,date, cracc.name, cracc.pr, 0, cracc_amount]]
+                            , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+                
+                entry = pd.concat([dr_entry01, dr_entry02, cr_entry03], ignore_index=True)
+
+                self.general_journal = pd.concat([self.general_journal, entry], ignore_index=True)
+        
+        def two_cr(date, dracc, dracc_amount, acc02, acc02_amount, cracc):
+                
+                cracc_amount = dracc_amount + acc02_amount
+                entry_type = 'two_cr'
+                
+                self.log_entry_tri(date, entry_type, dracc, acc02, cracc, dracc_amount, acc02_amount)
+
+                rand_id = round(100000*(random.random()))
+
+                dr_entry01 = pd.DataFrame([[rand_id, date, dracc.name, dracc.pr, dracc_amount, 0]]
+                            , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+                cr_entry01 = pd.DataFrame([[rand_id, date, acc02.name, acc02.pr, acc02_amount, 0]]
+                            , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+                cr_entry02 = pd.DataFrame([[rand_id,date, cracc.name, cracc.pr, 0, cracc_amount]]
+                            , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+                entry = pd.concat([dr_entry01, cr_entry01, cr_entry02], ignore_index=True)
+                self.general_journal = pd.concat([self.general_journal, entry], ignore_index=True)
             
-            dr_entry02 = pd.DataFrame([[rand_id, date, acc02.name, acc02.pr, acc02_amount, 0]]
-                        , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
+        if 'two_dr' == tri_type:
+            two_dr(date, dracc, dracc_amount, acc02, acc02_amount, cracc)
+        
+        else:
+            two_cr(date, dracc, dracc_amount, acc02, acc02_amount, cracc)
 
-            cr_entry03 = pd.DataFrame([[rand_id,date, cracc.name, cracc.pr, 0, cracc_amount]]
-                        , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
             
-            entry = pd.concat([dr_entry01, dr_entry02, cr_entry03], ignore_index=True)
-
-            self.general_journal = pd.concat([self.general_journal, entry], ignore_index=True)
-    
-    def journalize_tri02(self, date:str, 
-                         dracc:Account, dracc_amount:float, 
-                         acc02:Account, acc02_amount:float, 
-                         cracc:Account):
-            
-            cracc_amount = dracc_amount + acc02_amount
-            entry_type = 'two_cr'
-            
-            self.log_entry_tri(date, entry_type, dracc, acc02, cracc, dracc_amount, acc02_amount)
-
-            rand_id = round(100000*(random.random()))
-
-            dr_entry01 = pd.DataFrame([[rand_id, date, dracc.name, dracc.pr, dracc_amount, 0]]
-                        , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
-            cr_entry01 = pd.DataFrame([[rand_id, date, acc02.name, acc02.pr, acc02_amount, 0]]
-                        , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
-            cr_entry02 = pd.DataFrame([[rand_id,date, cracc.name, cracc.pr, 0, cracc_amount]]
-                        , columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
-            entry = pd.concat([dr_entry01, cr_entry01, cr_entry02], ignore_index=True)
-            self.general_journal = pd.concat([self.general_journal, entry], ignore_index=True)
-    
+        
     
     def entry_di(self, date:str, dr_acc:Account, cr_acc:Account, amount:float):
         '''
@@ -209,13 +217,15 @@ class Journaling:
         the second isthe problematic part of the program, it can be both
         so, `dracc_blnc` and `acc02_blnc` are used to decide, if they are both equal (the user could enter any value as long as the are equal)
         then `acc02` is debited, else, it is credited
-        o(mn)
+        O(mn)
         '''
         if dracc_blnc == acc02_blnc:
-            self.journalize_tri01(date, dracc, dracc_amount, acc02, acc02_amount, cracc)
+            tri_type = 'two_dr'
+            self.journalize_tri(date, tri_type, dracc, dracc_amount, acc02, acc02_amount, cracc)
         
         else:
-            self.journalize_tri02(date, dracc, dracc_amount, acc02, acc02_amount, cracc)
+            tri_type = 'two_cr'
+            self.journalize_tri(date, tri_type, dracc, dracc_amount, acc02, acc02_amount, cracc)
     
     def all_accounts(self):
         return self.used_accounts
