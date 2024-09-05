@@ -5,6 +5,7 @@ import pandas as pd
     #1. has a name and id (pr) 
     #2. has its own ledger that logs transactions that an account is involved in
     #3. is able to log a transaction into the ledger created
+    
 class Account:
     def __init__(self, pr:int, name: str):
         self.pr = pr

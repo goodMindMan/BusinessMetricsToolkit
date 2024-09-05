@@ -19,12 +19,12 @@ class Revenue(Account):
 class sales(Revenue):  
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
-        self.account_type = 'sales'
+        self.account_sub_type = 'sales'
 
 class GainDisposal(Revenue):  
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
-        self.account_type = 'gain_disposal'
+        self.account_sub_type = 'gain_disposal'
     
 class ContraRev(Account):
     def __init__(self, pr:int, name:str):
@@ -43,12 +43,12 @@ class ContraRev(Account):
 class Discount(ContraRev):      
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
-        self.account_type = 'discount'
+        self.account_sub_type = 'discount'
 
 class ReturnsAllowances(ContraRev):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
-        self.account_type = 'returns_allowances'
+        self.account_sub_type = 'returns_allowances'
 
 revenue_accounts = [
         'sales', 

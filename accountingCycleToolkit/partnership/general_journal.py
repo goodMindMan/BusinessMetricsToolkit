@@ -39,10 +39,31 @@ class Journaling:
     
     # This is the class attribute where all transactions are written
     general_journal = pd.DataFrame(columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
-    
-    used_accounts_names = []
-    used_accounts = []
 
+    used_accs = []
+    entries = []
+
+    def __init__(self):
+        '''
+        this way whenever we need all transactions made we find them in this list
+        O(mn)
+        '''
+        Journaling.entries.append(self)
+    
+    @classmethod
+    def get_accounts(cls):
+        '''
+        to access the list of classes
+        '''
+        return cls.used_accs
+
+    @classmethod
+    def get_entries(cls):
+        '''
+        to access the list of classes
+        '''
+        return cls.entries
+    
     def object_handling_di(self, dr_acc, cr_acc):
         '''
         Just makes sure the user doesn't enter a frappichino instead of an account
@@ -55,10 +76,9 @@ class Journaling:
                 '''
                 If this is the first time the account is used this block runs and adds the to the list of used accounts
                 '''
-                if acc not in self.used_accounts: #O(n)
+                if acc not in self.used_accs: #O(n)
                      
-                    self.used_accounts.append(acc) #O(1)
-                    self.used_accounts_names.append(acc.name) #O(1)
+                    self.used_accs.append(acc) #O(1)
 
             else:
                 print(f'''{acc} may not be a properly defined account or isn\'t an account at all,
@@ -70,10 +90,9 @@ class Journaling:
         for acc in accounts: #O(mn)
             
             if issubclass(Account, acc): 
-                if acc not in self.used_accounts: #O(n)
+                if acc not in self.used_accs: #O(n)
                      
-                    self.used_accounts.append(acc) #O(1)
-                    self.used_accounts_names.append(acc.name) #O(1)
+                    self.used_accs.append(acc) #O(1)
 
             else:
                 print(f'''{acc} may not be a properly defined account or isn\'t an account at all,
@@ -228,4 +247,4 @@ class Journaling:
             self.journalize_tri(date, tri_type, dracc, dracc_amount, acc02, acc02_amount, cracc)
     
     def all_accounts(self):
-        return self.used_accounts
+        return self.used_accs
