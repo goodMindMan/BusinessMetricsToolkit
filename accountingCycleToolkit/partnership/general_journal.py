@@ -232,7 +232,7 @@ class Journaling:
             ):
         '''
         Two accounts are entered; the first is always the debited account 
-        and the third is always a credited account (this is a GAAP convention)
+        and the third is always a credited account (its how double entry accounting works)
         the second isthe problematic part of the program, it can be both
         so, `dracc_blnc` and `acc02_blnc` are used to decide, if they are both equal (the user could enter any value as long as the are equal)
         then `acc02` is debited, else, it is credited
