@@ -10,17 +10,17 @@ from ..root_account import Account #Summons the abstract account
 class Asset(Account):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
-        self.balance = self.ledger['Debit'].sum() - self.ledger['Credit'].sum()
+        self.balance = self.ledger['Debit'].sum() - self.ledger['Credit'].sum() 
         self.account_type = 'asset'
     
     def show_ledger(self): #O(mn)
         '''
-        Debit is the normal balance of Assets accounts, that is y the right feild is empty i.e. `'-'`
+        Debit is the normal balance of Assets accounts, that is y the right field is empty i.e. `'-'`
         Space and Time complexity of O(mn) in this case 3*3
         '''
         balance_row = pd.DataFrame([['Balance:', self.balance, '-']], columns=self.columns) #O(mn)
         return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
-
+print('i now know assets')
 class Cash(Asset):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
@@ -41,6 +41,11 @@ class PrepaidExpense(Asset):
         super().__init__(pr, name, balance ,account_type)
         self.account_sub_type = 'prepaid'
 
+class ROU(Asset):
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'rou'
+
 class NotesReceivable(Asset):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
@@ -60,7 +65,12 @@ class Land(Asset):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
         self.account_sub_type = 'land'
-    
+
+class OtherPPE(Asset):
+    def __init__(self, pr:int, name:str, balance:float, account_type:str):
+        super().__init__(pr, name, balance ,account_type)
+        self.account_sub_type = 'other_ppe'
+         
 class IntangableAssets(Asset):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
@@ -80,6 +90,7 @@ class ContraAsset(Account):
         balance_row = pd.DataFrame([['Balance:', '-', self.balance()]], columns=self.columns) #O(mn)
         return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
 
+print('i now know contra assets')
 class AccDepreciation(ContraAsset): 
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance, account_type)
@@ -96,6 +107,7 @@ class AllowanceDoubtful(ContraAsset):
         self.account_sub_type = 'allowance_doubtful'
 
 # Add new sub types here
-asset_accounts = ['cash', 'account_receivables', 'inventory', 'prepaid', 'notes_receivable',
-        'investments', 'equipments', 'land', 'intangable_assets', 
-        'acc_depreciation', 'acc_depletion', 'allowance_doubtful']
+asset_accounts = ['ttl_cash', 'ttl_account_receivables', 'ttl_inventory', 'ttl_prepaid', 
+        'ttl_notes_receivable', 'ttl_rou',
+        'ttl_investments', 'ttl_equipments', 'ttl_land', 'ttl_intangable_assets', 
+        'ttl_acc_depreciation', 'ttl_acc_depletion', 'ttl_allowance_doubtful']

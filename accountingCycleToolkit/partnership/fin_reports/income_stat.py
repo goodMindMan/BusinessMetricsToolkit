@@ -1,61 +1,61 @@
 import pandas as pd
-
+    
 import partnership.root_account as root_account
 from partnership.account_types.expenses import expense_accounts as exp_lst
 from partnership.account_types.revenue import revenue_accounts as rev_lst
 from ..general_journal import Journaling as jour
 
-def import_accounts_todict(list:list):
-    
-    def make_ttl(ttl_str , account):
-        return ttl_str + account
+print('sucessful imports')
 
-    ttl_str = 'ttl_' 
-    def make_dict(list):
-        accounts_dict = {}
-        for account in list:
-            accounts_dict[make_ttl(ttl_str, account)] = 0
-        return accounts_dict
+def make_dict(list:list):
 
-    make_dict(list)
-
+    accounts_dict = {}
+    for account in list:
+        accounts_dict[account] = 0
+    return accounts_dict
 
 class IncomeStatement:
     def __init__(self, all_accounts:list):
         self.all_accounts = all_accounts
 
-        self.revenue_accounts = import_accounts_todict(rev_lst)
-        self.revenue_accounts.update({key: 0 for key in ['other_revenue', 'ttl_revenue']})
+        self.revenue_accounts = make_dict(rev_lst)
+        self.revenue_accounts.update({key: 0 for key in ['other_revenue', 'ttl_rev']})
 
-        self.expenses_accounts = import_accounts_todict(exp_lst)
-        self.expenses_accounts.update({key: 0 for key in ['other_expenses', 'ttl_expenses']})   
+        self.expense_accounts = make_dict(exp_lst)
+        self.expense_accounts.update({key: 0 for key in ['other_expenses', 'ttl_exp']})   
+    
+    def rev_aggrgt_add(self, account, acc_sub_type):
+        self.revenue_accounts['ttl_'+ acc_sub_type] +=account.balance()
+        self.revenue_accounts['ttl_rev'] +=account.balance()
+
+    def rev_aggrgt_sub(self, account, acc_sub_type):
+        self.revenue_accounts['ttl_'+ acc_sub_type] +=account.balance()
+        self.revenue_accounts['ttl_rev'] -=account.balance()
+     
+    def exp_aggrgt(self, account, acc_sub_type):
+        self.expense_accounts['ttl_'+ acc_sub_type] +=account.balance()
+        self.expense_accounts['ttl_exp'] +=account.balance()
 
     def revenue_prep(self, used_account:root_account.Account):
         
         if used_account.account_sub_type() == 'sales':
-            self.revenue_accounts['ttl_sales'] +=used_account.balance()
-            self.revenue_accounts['ttl_rev'] +=used_account.balance()
+            self.aggrgt_add(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'gain_disposal':
-            self.revenue_accounts['ttl_gain_disposal'] +=used_account.balance()
-            self.revenue_accounts['ttl_rev'] +=used_account.balance()
+            self.aggrgt_add(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'discount':
-            self.revenue_accounts['ttl_discount'] +=used_account.balance()
-            self.revenue_accounts['ttl_rev'] -=used_account.balance()
+            self.aggrgt_sub(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'returns_allowances':
-            self.revenue_accounts['ttl_returns_allowances'] +=used_account.balance()
-            self.revenue_accounts['ttl_rev'] -=used_account.balance()
+            self.aggrgt_sub(used_account, used_account.account_sub_type())
         
         else:
             if used_account.account_type() == 'revenue':
-                self.revenue_accounts['ttl_othr_rev'] +=used_account.balance()
-                self.revenue_accounts['ttl_rev'] +=used_account.balance()
+                self.aggrgt_add(used_account, used_account.account_sub_type())
             
             elif used_account.account_type() == 'contra_revenue':
-                self.revenue_accounts['ttl_othr_contra_revenue'] +=used_account.balance()
-                self.revenue_accounts['ttl_rev'] -=used_account.balance()
+                self.aggrgt_sub(used_account, used_account.account_sub_type())
             
             else:   
                 print(f'An error occured while incrementing the revenue account:`{used_account.name}`')
@@ -63,50 +63,40 @@ class IncomeStatement:
     
     def expense_prep(self, used_account:root_account.Account):
 
-        if used_account.account_sub_type() == 'cogs':
-            self.expenses_accounts['ttl_cogs'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+        if used_account.account_sub_type() == 'cost_rev':
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'salaries':
-            self.expenses_accounts['ttl_salaries'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'rent':
-            self.expenses_accounts['ttl_rent'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'utilities':
-            self.expenses_accounts['ttl_utilities'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'interest':
-            self.expenses_accounts['ttl_interest'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'insurance':
-            self.expenses_accounts['ttl_insurance'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'depreciation':
-            self.expenses_accounts['ttl_depreciation'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'depletion':
-            self.expenses_accounts['ttl_depletion'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         elif used_account.account_sub_type() == 'bad_debt':
-            self.expenses_accounts['ttl_bad_debt'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
         
         elif used_account.account_sub_type() == 'loss_disposal':
-            self.expenses_accounts['ttl_loss_disposal'] +=used_account.balance()
-            self.expenses_accounts['ttl_exp'] +=used_account.balance()
+            self.exp_aggrgt(used_account, used_account.account_sub_type())
 
         else:
             if used_account.account_type() == 'expense':
-                self.expenses_accounts['ttl_othr_exp'] +=used_account.balance()
-                self.expenses_accounts['ttl_exp'] +=used_account.balance()
+                self.exp_aggrgt(used_account, used_account.account_sub_type())
+
             else:
                 print(f'An error occured while incrementing the expense account:`{used_account.name}`')
         
@@ -133,19 +123,14 @@ class IncomeStatement:
             except (ValueError, TypeError, NameError):
                 print('Fault, contact admin')
 
-        exp_acc_keys = [
-            'ttl_cogs', 'ttl_salaries', 'ttl_rent', 'ttl_utilities', 'ttl_interest', 'ttl_insurance', 'ttl_depreciation', 
-                        'ttl_depletion', 'ttl_bad_debt', 'ttl_loss_disposal', 'ttl_othr_exp'
-        ]
-        used_exp_acc = self.expenses_accounts
-        for acc in exp_acc_keys:
-            if 0 == self.rev_acc[acc]:
+        used_exp_acc = self.expense_accounts
+        for acc in self.expense_accounts:
+            if 0 == self.expense_accounts[acc]:
                 used_exp_acc.pop(acc)
         
-        rev_acc_keys = ['ttl_sales', 'ttl_othr_contra_revenue', 'ttl_gain_disposal', 'ttl_discount', 'ttl_returns_allowances', 'ttl_othr_rev']
         used_rev_acc = self.revenue_accounts
-        for acc in rev_acc_keys:
-            if 0 == self.rev_acc[acc]:
+        for acc in self.revenue_accounts:
+            if 0 == self.revenue_accounts[acc]:
                 used_rev_acc.pop(acc)
         
         income_dict = used_exp_acc.update(used_rev_acc)
@@ -169,3 +154,5 @@ class IncomeStatement:
     def total_expenses(self, all_accounts:list):
         total_expenses = self.income_data_processing(jour.all_accounts(all_accounts))[4]
         return total_expenses
+
+print('i now know inom statements')

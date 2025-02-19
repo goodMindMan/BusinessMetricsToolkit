@@ -18,6 +18,8 @@ class Liability(Account):
         '''
         balance_row = pd.DataFrame([['Balance:', '-', self.balance()]], columns=self.columns) #O(mn)
         return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
+    
+print('i now know liabilites')
 
 class AccountPayable(Liability):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
@@ -74,7 +76,7 @@ class ContraLiability(Account):
         balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns)
         return pd.concat([self.ledger, balance_row], ignore_index=True)
 
-
+print('i now know contra liabilites')
 liability_accounts = [
     'account_pay','notes_pay','salaries_pay','interest_pay','unearned_revenue','cpltd',
     'longterm_notes_pay','loan', 'contra_liability'

@@ -16,6 +16,7 @@ class Equity(Account):
         balance_row = pd.DataFrame([['Balance:', '-', self.balance()]], columns=self.columns)
         return pd.concat([self.ledger, balance_row], ignore_index=True)
 
+print('i now know equity')
 class Withdrawals(Equity):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
@@ -29,3 +30,5 @@ class Withdrawals(Equity):
         '''
         balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns)
         return pd.concat([self.ledger, balance_row], ignore_index=True)
+    
+print('i now kow withdrawal')

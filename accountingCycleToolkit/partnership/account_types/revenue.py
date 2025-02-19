@@ -25,7 +25,8 @@ class GainDisposal(Revenue):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
         self.account_sub_type = 'gain_disposal'
-    
+
+print('i now know revenue')
 class ContraRev(Account):
     def __init__(self, pr:int, name:str):
         super().__init__(pr, name)
@@ -40,6 +41,7 @@ class ContraRev(Account):
         balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns) #O(mn)
         return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
 
+print('i now know contra revenue')
 class Discount(ContraRev):      
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)

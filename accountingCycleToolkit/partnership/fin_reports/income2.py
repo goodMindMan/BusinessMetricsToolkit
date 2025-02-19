@@ -133,7 +133,3 @@ class Income:
                 self.exp_accs['ttl_exp'] +=exp_acc.balance()
             else:
                 print(f'An error occured while incrementing the expense account:`{exp_acc.name}`')
-
-    def income_processing(self):
-
-        

@@ -1,8 +1,9 @@
 import pandas as pd
 import random
 
-from root_account import Account
+from .root_account import Account
 
+print('sucessful imports')
 # WHAT  IS JOURNALING???
 # Journaling is tha first step in the accounting cycle
 # To perform a transaction (and report it in the General Journal i.e. `Journaling.general_journal`)-
@@ -25,8 +26,8 @@ from root_account import Account
         # d. Demand any statement they want.
 
 # WHY THE PROGRAM SEEMS ADMITTEDLY A LITTLE BIT STUPID AND CLUMSY -->
-# Practically a journal entry invlves at least two aand at most three accounts
-# The journal entry two equal sides called debit (henceforth--> dr) and credit (henceforth--> cr)
+# Practically a journal entry involves at least two aand at most three accounts
+# The journal entry consists of two equal sides called debit (henceforth--> dr) and credit (henceforth--> cr)
 # whether the transaction involves two or three accounts (henceforth di, tri for simplicity)-
 # Debit should always equal credit
 # WHAT MAKES this program a little bit clumsy is that it has to account for both transactions that are di and tri,
@@ -39,14 +40,13 @@ class Journaling:
     
     # This is the class attribute where all transactions are written
     general_journal = pd.DataFrame(columns=['id', 'date', 'account_name', 'pr', 'dr', 'cr'])
-
     used_accs = []
     entries = []
 
     def __init__(self):
         '''
         this way whenever we need all transactions made we find them in this list
-        O(mn)
+        O(1)
         '''
         Journaling.entries.append(self)
     
@@ -60,7 +60,7 @@ class Journaling:
     @classmethod
     def get_entries(cls):
         '''
-        to access the list of classes
+        to access the list of entries
         '''
         return cls.entries
     
@@ -73,11 +73,11 @@ class Journaling:
         for acc in accounts: #O(mn)
             
             if issubclass(Account, acc): 
-                '''
-                If this is the first time the account is used this block runs and adds the to the list of used accounts
-                '''
+                
                 if acc not in self.used_accs: #O(n)
-                     
+                    '''
+                    If this is the first time the account is used this block runs and adds the to the list of used accounts
+                    ''' 
                     self.used_accs.append(acc) #O(1)
 
             else:
@@ -125,7 +125,7 @@ class Journaling:
             logs the entry to the ledger of each account 
             this is a one dr & two cr
             '''
-            cracc_amount = dracc_amount + acc02_amount
+            cracc_amount = dracc_amount - acc02_amount
             dracc.transaction(date, dracc_amount)
             acc02.transaction(date, 0, acc02_amount)
             cracc.transaction(date, 0, cracc_amount)
@@ -233,7 +233,7 @@ class Journaling:
         '''
         Two accounts are entered; the first is always the debited account 
         and the third is always a credited account (its how double entry accounting works)
-        the second isthe problematic part of the program, it can be both
+        the second is the problematic part of the program, it can be both
         so, `dracc_blnc` and `acc02_blnc` are used to decide, if they are both equal (the user could enter any value as long as the are equal)
         then `acc02` is debited, else, it is credited
         O(mn)
@@ -248,3 +248,5 @@ class Journaling:
     
     def all_accounts(self):
         return self.used_accs
+
+print('i now know journaling')

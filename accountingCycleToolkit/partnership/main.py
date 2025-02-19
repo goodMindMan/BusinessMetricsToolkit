@@ -1,6 +1,6 @@
-import partnership.account_types.assets as a
-import partnership.account_types.capital as c
-import partnership.general_journal as j
+import account_types.assets as a
+import account_types.capital as c
+import general_journal as j
 
 
 mc1 = a.Cash(101, 'mc1')

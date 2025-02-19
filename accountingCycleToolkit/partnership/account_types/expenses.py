@@ -15,36 +15,22 @@ class Expense(Account):
         '''
         balance_row = pd.DataFrame([['Balance:', self.balance(), '-']], columns=self.columns) #O(mn)
         return pd.concat([self.ledger, balance_row], ignore_index=True) #O(n)
-
-class Cogs(Expense):
+    
+print('i now know expenses')
+class CostRev(Expense):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
-        self.account_sub_type = 'cogs'
+        self.account_sub_type = 'cost_rev'
 
-class Salaries(Expense):
+class operating(Expense):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
-        self.account_sub_type = 'salaries'
-
-class Rent(Expense):
-    def __init__(self, pr:int, name:str, balance:float, account_type:str):
-        super().__init__(pr, name, balance ,account_type)
-        self.account_sub_type = 'rent'
-
-class Utilities(Expense):
-    def __init__(self, pr:int, name:str, balance:float, account_type:str):
-        super().__init__(pr, name, balance ,account_type)
-        self.account_sub_type = 'utilities'
+        self.account_sub_type = 'operating'
 
 class Interest(Expense):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
         super().__init__(pr, name, balance ,account_type)
         self.account_sub_type = 'interest'
-
-class Insurance(Expense):
-    def __init__(self, pr:int, name:str, balance:float, account_type:str):
-        super().__init__(pr, name, balance ,account_type)
-        self.account_sub_type = 'insurance'
 
 class Depreciation(Expense):
     def __init__(self, pr:int, name:str, balance:float, account_type:str):
@@ -68,8 +54,7 @@ class LossDisposal(Expense):
 
 # Add new sub types here
 expense_accounts = [
-        'ttl_cogs', 'ttl_salaries', 'ttl_rent', 
-        'ttl_utilities', 'ttl_interest', 'ttl_insurance', 'ttl_depreciation', 
+        'ttl_cost_rev', 'ttl_operating', 'ttl_interest', 'ttl_depreciation', 
         'ttl_depletion', 'ttl_bad_debt', 'ttl_loss_disposal', 
         'ttl_othr_exp', 'ttl_exp' 
 ]
