@@ -1,7 +1,7 @@
 import pandas as pd
 import random
 
-from partnership.root_account import Account
+from root_account import Account
 
 # WHAT  IS JOURNALING???
 # Journaling is tha first step in the accounting cycle

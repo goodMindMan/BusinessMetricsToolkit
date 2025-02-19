@@ -1,5 +1,5 @@
 import pandas as pd 
-import companyMod as cm
+import CompaniesMod as cm
 
 # function that concatenates multiple instances of a company (different periods)
 def multi_period_table(*in_objs):
